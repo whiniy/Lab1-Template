@@ -123,7 +123,7 @@ class WizardMiniMax(ReasoningWizard):
 
     def minimax(self, state: GameState, depth: int):
         # check if gave is over or if we've reached max depth
-        if self.is_terminal(state) or depth == self.max_depth:
+        if self.is_terminal(state):
             return self.evaluation(state)
         
         # get all successor states from current state
@@ -135,6 +135,8 @@ class WizardMiniMax(ReasoningWizard):
         active_ent = state.get_active_entity()
         # if Wizard, maximize value, else minimize value
         if isinstance(active_ent, Wizard):
+            if depth == self.max_depth:
+                return self.evaluation(state)
             value = float("-inf")
             for action, result in successors:
                 value = max(value, self.minimax(result, depth + 1))
