@@ -173,11 +173,11 @@ class WizardAlphaBeta(ReasoningWizard):
         
         portal_distance = manhat(wizard_loc, portal_loc)
         # getting to portal is more important than avoiding goblins
-        score -= portal_distance * 7
+        score -= portal_distance * 8
 
         if crystal_locs:
             closest_crystal_distance = min(manhat(wizard_loc, crystal_loc) for crystal_loc in crystal_locs)
-            score = score - (closest_crystal_distance * 5) - (len(crystal_locs) * 30)
+            score = score - (closest_crystal_distance * 6) - (len(crystal_locs) * 40)
         
         # if goblins, farther away the better
         for goblin_loc in goblin_locs:
@@ -192,7 +192,7 @@ class WizardAlphaBeta(ReasoningWizard):
                 score -= 50
             if goblin_distance == 3:
                 score -= 15
-            score += 1
+            score += min(goblin_distance, 5)
             
         return score
 
