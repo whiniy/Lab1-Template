@@ -70,17 +70,17 @@ class WizardMiniMax(ReasoningWizard):
 
         # getting to portal is more important than avoiding goblins, so weight it more heavily
         score = -portal_distance * 8
-        if goblin_locs:
-            closest_goblin_distance = min(manhat(wizard_loc, goblin_loc) for goblin_loc in goblin_locs)
+        for goblin_loc in goblin_locs:
+            goblin_distance = manhat(wizard_loc, goblin_loc)
 
             # decrease score based on how close the closest goblin is
-            if closest_goblin_distance == 0:
+            if goblin_distance == 0:
                 return float('-inf')
-            if closest_goblin_distance == 1:
+            if goblin_distance == 1:
                 score -= 110
-            if closest_goblin_distance == 2:
+            if goblin_distance == 2:
                 score -= 50
-            if closest_goblin_distance == 3:
+            if goblin_distance == 3:
                 score -= 15
             
             score += 1
@@ -171,24 +171,26 @@ class WizardAlphaBeta(ReasoningWizard):
         
         portal_distance = manhat(wizard_loc, portal_loc)
         # getting to portal is more important than avoiding goblins
-        score -= portal_distance * 5
+        score -= portal_distance * 7
 
         if crystal_locs:
             closest_crystal_distance = min(manhat(wizard_loc, crystal_loc) for crystal_loc in crystal_locs)
-            score = score - (closest_crystal_distance * 3) - (len(crystal_locs) * 15)
+            score = score - (closest_crystal_distance * 5) - (len(crystal_locs) * 30)
         
         # if goblins, farther away the better
-        if goblin_locs:
-            closest_goblin_distance = min(manhat(wizard_loc, goblin_loc) for goblin_loc in goblin_locs)
+        for goblin_loc in goblin_locs:
+            goblin_distance = manhat(wizard_loc, goblin_loc)                
             
-            score += closest_goblin_distance * 7
             # decrease score based on how close the closest goblin is
-            if closest_goblin_distance == 0:
+            if goblin_distance == 0:
                 return float('-inf')
-            if closest_goblin_distance == 1:
+            if goblin_distance == 1:
+                score -= 110
+            if goblin_distance == 2:
                 score -= 50
-            if closest_goblin_distance == 2:
+            if goblin_distance == 3:
                 score -= 15
+            score += 1
             
         return score
 
@@ -202,6 +204,7 @@ class WizardAlphaBeta(ReasoningWizard):
         # wizard reached portal
         if wizard_loc == portal_loc:
             return True
+        return False
 
     def react(self, state: GameState) -> WizardMoves:
         successors = list(self.get_successors(state))
