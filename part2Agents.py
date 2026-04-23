@@ -215,13 +215,22 @@ class WizardAlphaBeta(ReasoningWizard):
         successors.sort(key=lambda x: self.evaluation(x[1]), reverse=True)
         best_action = successors[0][0]
         best_value = float("-inf")
+        
+        alpha = float("-inf")
+        beta = float("inf")
 
         for action, result in successors:
+            self.alphaPass = alpha
+            self.betaPass = beta
             value = self.alpha_beta_minimax(result, 1)
 
             if value > best_value:
                 best_action = action
                 best_value = value
+            alpha = max(alpha, value)
+
+            if alpha >= beta:
+                break
         
         return best_action
 
@@ -262,8 +271,9 @@ class WizardAlphaBeta(ReasoningWizard):
                     if alpha >= beta:
                         break
                 return value
-        
-        return is_maximizing(state, depth, float("-inf"), float("inf"))
+        alpha = getattr(self, "alphaPass", float("-inf"))
+        beta = getattr(self, "betaPass", float("inf"))
+        return is_maximizing(state, depth, alpha, beta)
     
 
 class WizardExpectimax(ReasoningWizard):
