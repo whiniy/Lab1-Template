@@ -228,7 +228,7 @@ class WizardAlphaBeta(ReasoningWizard):
     def alpha_beta_minimax(self, state: GameState, depth: int):
         def is_maximizing(state: GameState, depth: int, alpha: float, beta: float) -> float:
             # if game is over or we've reached max depth
-            if self.is_terminal(state) or depth == self.max_depth:
+            if self.is_terminal(state):
                 return self.evaluation(state)
             
             # get all successor states from current state
@@ -240,6 +240,9 @@ class WizardAlphaBeta(ReasoningWizard):
 
             # maximizing for wizard
             if isinstance(active_ent, Wizard):
+                if depth == self.max_depth:
+                    return self.evaluation(state)
+                
                 successors.sort(key=lambda x: self.evaluation(x[1]), reverse=True)
                 value = float("-inf")
                 for action, result in successors:
