@@ -69,19 +69,21 @@ class WizardMiniMax(ReasoningWizard):
         portal_distance = manhat(wizard_loc, portal_loc)
 
         # getting to portal is more important than avoiding goblins, so weight it more heavily
-        score = -portal_distance * 5
+        score = -portal_distance * 8
         if goblin_locs:
             closest_goblin_distance = min(manhat(wizard_loc, goblin_loc) for goblin_loc in goblin_locs)
-            # the farther away the goblins are, the better, so add to score
-            score += closest_goblin_distance * 2
 
             # decrease score based on how close the closest goblin is
             if closest_goblin_distance == 0:
                 return float('-inf')
             if closest_goblin_distance == 1:
-                score -= 50
+                score -= 110
             if closest_goblin_distance == 2:
+                score -= 50
+            if closest_goblin_distance == 3:
                 score -= 15
+            
+            score += 1
 
         return score
 
