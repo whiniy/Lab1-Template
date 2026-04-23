@@ -352,7 +352,7 @@ class CrystalSearchWizard(WizardSearchAgent):
             return None
         
         # pop off element with lowest f(n) value, then convert it to a game state
-        return self.search_to_game(self.search_pq.pop(0)[1])
+        return self.search_to_game(heapq.heappop(self.search_pq)[1])
 
     def process_search_expansion(
         self, source: GameState, target: GameState, action: WizardMoves
@@ -383,8 +383,7 @@ class CrystalSearchWizard(WizardSearchAgent):
         else:
             f = targetCost + self.heuristic(target)
             # add targetState to the priority queue to be explored later
-            self.search_pq.append((f, targetState))
-            self.search_pq.sort(key=lambda x: x[0])
+            heapq.heappush(self.search_pq, (f, targetState))
 
 class SuboptimalCrystalSearchWizard(CrystalSearchWizard):
     @dataclass(eq=True, frozen=True, order=True)
